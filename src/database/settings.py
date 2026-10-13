@@ -3,6 +3,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DBSettings(BaseSettings):
+    """Настройки подключения к базе данных."""
+
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", env_prefix="DB_", extra="ignore"
     )

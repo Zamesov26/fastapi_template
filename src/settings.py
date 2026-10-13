@@ -6,5 +6,7 @@ from src.database.settings import DBSettings
 
 
 class Settings(BaseSettings):
+    """Объединённые настройки приложения."""
+
     api: APISettings = Field(default_factory=APISettings)
     db: DBSettings = Field(default_factory=DBSettings)

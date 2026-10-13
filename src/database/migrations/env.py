@@ -37,15 +37,11 @@ target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
+    """Запустить миграции в автономном режиме.
 
-    This configures the context with just a URL
-    and not an Engine, though an Engine is acceptable
-    here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
-
-    Calls to context.execute() here emit the given string to the
-    script output.
+    В этом режиме Alembic формирует SQL без подключения к базе данных.
+    Созданные через ``context.execute()`` выражения записываются в выходной
+    SQL-скрипт.
 
     """
     url = config.get_main_option("sqlalchemy.url")
@@ -61,12 +57,7 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
-
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
+    """Запустить миграции с подключением к базе данных."""
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",

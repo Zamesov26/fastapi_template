@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from src.api.handlers.routers_v1 import api_router as v1_routers
-from src.middlewares import add_middlewares
+from src.middlewares.setup import add_middlewares
 from src.settings import Settings
 
 settings = Settings()
@@ -12,6 +12,7 @@ settings = Settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Управлять ресурсами приложения при запуске и завершении работы."""
     app.state.engine = create_async_engine(settings.db.url)
     app.state.session_maker = async_sessionmaker(
         app.state.engine, expire_on_commit=False
