@@ -1,8 +1,8 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-from app.api.settings import APISettings
-from app.database.settings import DBSettings
+from src.api.settings import APISettings
+from src.database.settings import DBSettings
 
 
 class Settings(BaseSettings):

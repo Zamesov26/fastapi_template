@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.api.handlers.routers_v1 import api_router as v1_routers
-from app.middlewares import add_middlewares
-from app.settings import Settings
+from src.api.handlers.routers_v1 import api_router as v1_routers
+from src.middlewares import add_middlewares
+from src.settings import Settings
 
 settings = Settings()
 

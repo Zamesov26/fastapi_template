@@ -25,7 +25,7 @@ fastapi_base_template/
 ├── dev_run.py           # Development server runner
 ├── dev.requirements.txt # Development dependencies
 ├── requirements.txt     # Production dependencies
-├── app/                 # Main application package
+├── src/                 # Main application package
 │   ├── __init__.py
 │   ├── dependencies.py  # Dependency injection functions
 │   ├── main.py          # Application entry point
@@ -111,7 +111,7 @@ python dev_run.py
 
 Or using uvicorn directly:
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The application will be available at `http://0.0.0.0:8000`.
@@ -120,12 +120,12 @@ The application will be available at `http://0.0.0.0:8000`.
 
 For production deployments:
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+uvicorn src.main:app --host 0.0.0.0 --port 8000
 ```
 
 Or using a production-ready ASGI server like Gunicorn:
 ```bash
-gunicorn app.main:app -k uvicorn.workers.UvicornWorker
+gunicorn src.main:app -k uvicorn.workers.UvicornWorker
 ```
 
 ## 🧪 Testing
@@ -200,23 +200,23 @@ The template includes a health check endpoint:
 
 ### Adding New Endpoints
 
-1. Create new handlers in `app/api/handlers/`
-2. Import and include them in `app/api/handlers/routers_v1.py`
+1. Create new handlers in `src/api/handlers/`
+2. Import and include them in `src/api/handlers/routers_v1.py`
 3. Define your routes using FastAPI decorators
 
 ### Adding Models
 
-1. Create new SQLAlchemy models in `app/models/`
-2. Import them in `app/models/__init__.py`
+1. Create new SQLAlchemy models in `src/models/`
+2. Import them in `src/models/__init__.py`
 
 ### Adding Schemas
 
-1. Create Pydantic schemas in `app/schemas/`
+1. Create Pydantic schemas in `src/schemas/`
 2. Use them for request/response validation
 
 ### Adding Middleware
 
-1. Implement middleware in `app/middlewares/__init__.py`
+1. Implement middleware in `src/middlewares/__init__.py`
 2. Add them to the `add_middlewares` function
 
 ## 🤝 Contributing

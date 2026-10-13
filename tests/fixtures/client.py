@@ -1,8 +1,8 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from app.dependencies import get_session
-from app.main import app
+from src.dependencies import get_session
+from src.main import app
 
 
 @pytest.fixture

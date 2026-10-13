@@ -9,9 +9,9 @@ from sqlalchemy import engine_from_config, pool
 # access to the values within the .ini file in use.
 sys.path.insert(0, dirname(dirname(dirname((dirname(abspath(__file__)))))))
 
-from app.database.base import Base
-from app.models import *
-from app.settings import Settings
+from src.database.base import Base
+from src.models import *
+from src.settings import Settings
 
 settings = Settings()
 
