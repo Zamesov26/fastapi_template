@@ -1,252 +1,137 @@
-# FastAPI Base Template
+# FastAPI Template
 
-A robust, production-ready FastAPI template designed to accelerate development of new projects with modern best practices and essential integrations out-of-the-box.
+Базовый шаблон асинхронного API на FastAPI с PostgreSQL, миграциями Alembic и настроенными инструментами контроля качества.
 
-## 🚀 Features
+## Технологии
 
-- **FastAPI** - Modern, fast (high-performance) web framework for building APIs with Python
-- **SQLAlchemy 2.0** - Modern SQL Toolkit and Object-Relational Mapping (ORM)
-- **Async PostgreSQL** - Asynchronous database operations with PostgreSQL using asyncpg
-- **Pydantic Settings** - Settings management with environment variable support
-- **Dependency Injection** - Built-in dependency management
-- **Database Migrations** - Alembic integration for database schema migrations
-- **Structured Project Layout** - Clean architecture following best practices
-- **Configuration Management** - Environment-based configuration with `.env` support
-- **Middleware Support** - Extensible middleware system
-- **Life Cycle Management** - Proper async engine disposal and session management
+- FastAPI и Uvicorn;
+- SQLAlchemy 2.0 и asyncpg;
+- Pydantic Settings;
+- Alembic;
+- pytest и HTTPX;
+- Ruff и mypy.
 
-## 📁 Project Structure
+## Быстрый старт
 
-```
-fastapi_base_template/
-├── .example.env          # Example environment variables
-├── .gitignore           # Git ignore patterns
-├── alembic.ini          # Alembic configuration
-├── dev_run.py           # Development server runner
-├── dev.requirements.txt # Development dependencies
-├── requirements.txt     # Production dependencies
-├── src/                 # Main application package
-│   ├── __init__.py
-│   ├── dependencies.py  # Dependency injection functions
-│   ├── main.py          # Application entry point
-│   ├── settings.py      # Main settings configuration
-│   ├── api/            # API endpoints and routes
-│   │   ├── __init__.py
-│   │   ├── settings.py # API-specific settings
-│   │   └── handlers/
-│   │       ├── __init__.py
-│   │       ├── life_handler.py # Health check endpoint
-│   │       └── routers_v1.py # API v1 router
-│   ├── database/       # Database configuration and models
-│   │   ├── __init__.py
-│   │   ├── base.py     # Base model class
-│   │   ├── settings.py # Database settings
-│   │   └── migrations/ # Alembic migrations
-│   ├── middlewares/    # Application middleware
-│   ├── models/         # SQLAlchemy models
-│   └── schemas/        # Pydantic schemas
-└── tests/              # Test suite
-    ├── __init__.py
-    ├── app/            # Application tests
-    ├── fixtures/       # Test fixtures
-    └── conftest.py     # Pytest configuration
-```
+Требования: Python 3.12+ и PostgreSQL.
 
-## 🛠️ Installation
-
-### Prerequisites
-
-- Python 3.10+
-- PostgreSQL database (for asyncpg)
-
-### Setup
-
-1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd fastapi_base_template
-```
+cd fastapi_template
 
-2. Create a virtual environment:
-```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
+source .venv/bin/activate
 
-3. Install dependencies:
-```bash
 pip install -r requirements.txt
 pip install -r dev.requirements.txt
-```
 
-4. Create your environment file:
-```bash
 cp .example.env .env
 ```
 
-5. Configure your `.env` file with your specific settings:
-```bash
-# API Settings
-API_NAME=My FastAPI App
-API_DEBUG=True
+Для активации виртуального окружения в Windows:
 
-# Database Settings
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_NAME=your_database_name
-DB_DRIVER=asyncpg
+```powershell
+.venv\Scripts\activate
 ```
 
-## 🏃‍♂️ Running the Application
+Укажите параметры подключения к PostgreSQL в `.env`. Обязательный параметр — `DB_NAME`.
 
-### Development
+## Запуск
 
-For development with auto-reload:
+Сервер разработки с автоматической перезагрузкой:
 
 ```bash
 python dev_run.py
 ```
 
-Or using uvicorn directly:
-```bash
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-The application will be available at `http://0.0.0.0:8000`.
-
-### Production
-
-For production deployments:
-```bash
-uvicorn src.main:app --host 0.0.0.0 --port 8000
-```
-
-Or using a production-ready ASGI server like Gunicorn:
-```bash
-gunicorn src.main:app -k uvicorn.workers.UvicornWorker
-```
-
-## 🧪 Testing
-
-Run the test suite using pytest:
+Или напрямую через Uvicorn:
 
 ```bash
-pytest
+uvicorn src.main:create_app --factory --reload --host 0.0.0.0 --port 8000
 ```
 
-Or with more verbose output:
+После запуска доступны:
+
+- API: `http://localhost:8000`;
+- Swagger UI: `http://localhost:8000/docs`;
+- ReDoc: `http://localhost:8000/redoc`;
+- проверка доступности: `GET /api/v1/health`.
+
+## Команды разработки
+
 ```bash
-pytest -v
+make test          # Запустить тесты
+make lint          # Проверить код с помощью Ruff
+make format-check  # Проверить форматирование
+make format        # Отформатировать код
+make typecheck     # Проверить типы с помощью mypy
 ```
 
-## ✨ Code Quality
+Дополнительные команды автоматического исправления доступны в `Makefile`.
 
-The project uses Ruff for linting, import sorting, and formatting:
+## Миграции
+
+Создать миграцию:
 
 ```bash
-make lint          # Check code quality
-make format-check  # Check formatting
-make format        # Format code
-make lint-fix      # Apply safe lint fixes
-make ruff-all      # Format and apply all available fixes
-make typecheck     # Check static types
+alembic revision --autogenerate -m "описание изменений"
 ```
 
-## 🗄️ Database Migrations
+Применить миграции:
 
-The template includes Alembic for database migrations:
-
-1. Create a new migration:
-```bash
-alembic revision --autogenerate -m "description of changes"
-```
-
-2. Apply migrations:
 ```bash
 alembic upgrade head
 ```
 
-3. Check current migration status:
+Проверить текущее состояние:
+
 ```bash
 alembic current
 ```
 
-## 🔧 Configuration
+## Конфигурация
 
-The application uses Pydantic Settings for configuration management:
+Настройки загружаются из переменных окружения и корневого файла `.env`. Путь к
+файлу определяется относительно проекта и не зависит от текущей рабочей
+директории.
 
-- API settings (`API_` prefix in environment variables)
-- Database settings (`DB_` prefix in environment variables)
-- Settings are loaded from environment variables and .env files
+Переменные окружения имеют приоритет над значениями из `.env`. В Docker Compose
+следует передавать их контейнеру через `env_file` или `environment`; код
+приложения при этом не зависит от расположения каталога `infra`.
 
-### Available Settings
+| Переменная | Описание | Значение по умолчанию |
+|---|---|---|
+| `API_NAME` | Название приложения | `Application name API` |
+| `API_DEBUG` | Режим отладки | `False` |
+| `API_VERSION` | Версия API | `0.1.0` |
+| `DB_HOST` | Адрес PostgreSQL | `localhost` |
+| `DB_PORT` | Порт PostgreSQL | `5432` |
+| `DB_USER` | Пользователь PostgreSQL | `postgres` |
+| `DB_PASSWORD` | Пароль PostgreSQL | `postgres` |
+| `DB_NAME` | Имя базы данных | обязательный параметр |
+| `DB_DRIVER` | Драйвер SQLAlchemy | `asyncpg` |
 
-**API Settings:**
-- `API_NAME` - Application name (default: "Application name API")
-- `API_DEBUG` - Debug mode (default: False)
-- `API_VERSION` - API version (default: "0.1.0")
+Пример значений находится в `.example.env`. Файл `.env` исключён из Git.
 
-**Database Settings:**
-- `DB_HOST` - Database host (default: "localhost")
-- `DB_PORT` - Database port (default: 5432)
-- `DB_USER` - Database user (default: "postgres")
-- `DB_PASSWORD` - Database password (default: "postgres")
-- `DB_NAME` - Database name (required)
-- `DB_DRIVER` - Database driver (default: "asyncpg")
+## Структура проекта
 
-## 🛡️ Security
+```text
+fastapi_template/
+├── src/
+│   ├── api/          # HTTP API и маршруты
+│   ├── database/     # Настройки БД и миграции
+│   ├── middlewares/  # Middleware приложения
+│   ├── models/       # Модели SQLAlchemy
+│   ├── schemas/      # Схемы Pydantic
+│   ├── config.py     # Общие правила загрузки окружения
+│   ├── dependencies.py
+│   ├── main.py
+│   └── settings.py
+├── tests/            # Тесты и фикстуры
+├── alembic.ini
+├── dev_run.py
+├── Makefile
+└── pyproject.toml
+```
 
-This template provides a solid foundation for security:
-- Input validation via Pydantic models
-- Proper async context management
-- Safe database connection handling
-- Environment-based configuration to keep secrets secure
-
-## 📊 API Endpoints
-
-The template includes a health check endpoint:
-- `GET /api/v1/health` - Returns application health status
-
-## 🧩 Extending the Template
-
-### Adding New Endpoints
-
-1. Create new handlers in `src/api/handlers/`
-2. Import and include them in `src/api/handlers/routers_v1.py`
-3. Define your routes using FastAPI decorators
-
-### Adding Models
-
-1. Create new SQLAlchemy models in `src/models/`
-2. Import them in `src/models/__init__.py`
-
-### Adding Schemas
-
-1. Create Pydantic schemas in `src/schemas/`
-2. Use them for request/response validation
-
-### Adding Middleware
-
-1. Implement middleware in `src/middlewares/__init__.py`
-2. Add them to the `add_middlewares` function
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- [FastAPI](https://fastapi.tiangolo.com/) - High-performance web framework
-- [SQLAlchemy](https://www.sqlalchemy.org/) - Python SQL Toolkit and ORM
-- [Pydantic](https://pydantic-docs.helpmanual.io/) - Data validation library
-- [Alembic](https://alembic.sqlalchemy.org/) - Database migration tool
+Новые маршруты подключаются в `src/api/handlers/routers_v1.py`, модели — в `src/models/__init__.py`, а middleware регистрируются в `src/middlewares/setup.py`.
