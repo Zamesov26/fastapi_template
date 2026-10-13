@@ -1,0 +1,74 @@
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+python_version = "3.12"
+mypy_path = "."
+explicit_package_bases = true
+check_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+warn_return_any = true
+warn_unused_ignores = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["src", "tests"]
+extend-exclude = [
+    "**/migrations/**",
+    "**/__pycache__/**",
+    ".venv/",
+    "venv/",
+    ".pytest_cache/",
+    ".ruff_cache/",
+]
+
+[tool.ruff.lint]
+ignore = [
+    "E501",
+    "D105",  # Magic methods are self-describing.
+    "D106",  # Nested classes are framework configuration.
+    "D107",  # Constructor arguments are described by the class and signature.
+]
+select = [
+    "A", # flake8-builtins
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "UP", # pyupgrade
+    "B", # flake8-bugbear
+    "SIM", # flake8-simplify
+    "I", # isort
+    "C", # flake8-comprehensions
+    "D", # pydocstyle
+    "LOG", # flake8-logging
+    "PIE", # flake8-pie
+    "PT", # flake8-pytest-style
+    "RET", # flake8-return
+    "RUF100", # unused-noqa
+    "S", # flake8-bandit
+    "T100", # flake8-debugger
+    "W", # pycodestyle warnings
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "D100",
+    "D104",
+    "D200",  # One-line docstring should fit on one line.
+    "D205",  # Blank line between summary and description.
+    "D400",  # First line should end with a period.
+    "S101",  # Assert is the primary pytest verification mechanism.
+    "S105",  # Test credentials are intentionally non-secret.
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+line-ending = "lf"

@@ -1,6 +1,5 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
-
 from src.dependencies import get_session
 from src.main import app
 
@@ -16,7 +15,7 @@ async def client(session_maker):
     app.dependency_overrides[get_session] = override_get_session
 
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+    async with AsyncClient(transport=transport, base_url='http://test') as ac:
         yield ac
 
     app.dependency_overrides.clear()

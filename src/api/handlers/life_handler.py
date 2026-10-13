@@ -1,9 +1,11 @@
+"""Обработчик проверки доступности приложения."""
+
 from fastapi import APIRouter
 
 router = APIRouter()
 
 
-@router.get("/health")
+@router.get('/health')
 async def health_check():
     """Вернуть состояние доступности сервиса."""
-    return {"status": "healthy", "message": "FastAPI service is running"}
+    return {'status': 'healthy', 'message': 'FastAPI service is running'}

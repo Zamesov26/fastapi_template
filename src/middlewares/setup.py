@@ -1,3 +1,5 @@
+"""Регистрация middleware приложения."""
+
 from fastapi import FastAPI
 
 

@@ -1,3 +1,5 @@
+"""Создание и настройка ASGI-приложения."""
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -29,4 +31,4 @@ app = FastAPI(
 )
 
 add_middlewares(app)
-app.include_router(v1_routers, prefix="/api/v1")
+app.include_router(v1_routers, prefix='/api/v1')

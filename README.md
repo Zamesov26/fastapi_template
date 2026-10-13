@@ -141,6 +141,19 @@ Or with more verbose output:
 pytest -v
 ```
 
+## ✨ Code Quality
+
+The project uses Ruff for linting, import sorting, and formatting:
+
+```bash
+make lint          # Check code quality
+make format-check  # Check formatting
+make format        # Format code
+make lint-fix      # Apply safe lint fixes
+make ruff-all      # Format and apply all available fixes
+make typecheck     # Check static types
+```
+
 ## 🗄️ Database Migrations
 
 The template includes Alembic for database migrations:

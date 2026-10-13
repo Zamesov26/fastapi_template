@@ -1,3 +1,5 @@
+"""Маршруты первой версии HTTP API."""
+
 from fastapi import APIRouter
 
 from src.api.handlers import life_handler

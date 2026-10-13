@@ -1,4 +1,6 @@
-from typing import AsyncGenerator
+"""Зависимости FastAPI."""
+
+from collections.abc import AsyncGenerator
 
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
