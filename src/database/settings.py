@@ -1,15 +1,15 @@
 """Настройки подключения к базе данных."""
 
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import SettingsConfigDict
+
+from src.config import AppBaseSettings
 
 
-class DBSettings(BaseSettings):
+class DBSettings(AppBaseSettings):
     """Настройки подключения к базе данных."""
 
-    model_config = SettingsConfigDict(
-        env_file='.env', env_file_encoding='utf-8', env_prefix='DB_', extra='ignore'
-    )
+    model_config = SettingsConfigDict(env_prefix='DB_')
 
     host: str = Field('localhost')
     port: int = Field(5432)

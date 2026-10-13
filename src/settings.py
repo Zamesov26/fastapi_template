@@ -1,13 +1,12 @@
 """Корневая конфигурация приложения."""
 
-from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic import BaseModel, Field
 
 from src.api.settings import APISettings
 from src.database.settings import DBSettings
 
 
-class Settings(BaseSettings):
+class Settings(BaseModel):
     """Объединённые настройки приложения."""
 
     api: APISettings = Field(default_factory=APISettings)

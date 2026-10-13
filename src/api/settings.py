@@ -1,15 +1,15 @@
 """Настройки HTTP API."""
 
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import SettingsConfigDict
+
+from src.config import AppBaseSettings
 
 
-class APISettings(BaseSettings):
+class APISettings(AppBaseSettings):
     """Настройки HTTP API приложения."""
 
-    model_config = SettingsConfigDict(
-        env_file='.env', env_prefix='API_', env_file_encoding='utf-8', extra='ignore'
-    )
+    model_config = SettingsConfigDict(env_prefix='API_')
 
     name: str = Field('Application name API')
     debug: bool = Field(False)

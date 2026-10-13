@@ -1,12 +1,15 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
+from src.database.settings import DBSettings
 from src.dependencies import get_session
-from src.main import app
+from src.main import create_app
+from src.settings import Settings
 
 
 @pytest.fixture
 async def client(session_maker):
     """Создаём тестовый клиент с переопределённой зависимостью get_session."""
+    app = create_app(Settings(db=DBSettings(name='test_db')))
 
     async def override_get_session():
         async with session_maker() as session:
