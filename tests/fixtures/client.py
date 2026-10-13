@@ -1,15 +1,22 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
-from src.database.settings import DBSettings
 from src.main import create_app
 from src.settings import Settings
 
+from tests.settings import TestDBSettings
+
 
 @pytest.fixture
-async def client():
-    """Создать HTTP-клиент без запуска жизненного цикла приложения."""
-    app = create_app(Settings(db=DBSettings(name='test_db')))
+def app():
+    """Создать изолированный экземпляр приложения для теста."""
+    return create_app(Settings(db=TestDBSettings()))
 
+
+@pytest.fixture
+async def client(app):
+    """Создать HTTP-клиент без запуска жизненного цикла приложения."""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url='http://test') as ac:
         yield ac
+
+    app.dependency_overrides.clear()

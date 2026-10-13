@@ -1,16 +1,14 @@
 import pytest
-from sqlalchemy import NullPool
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from src.database.base import Base
+from src.database.session import create_db_engine, create_session_maker
 
-# TODO config
-TEST_DATABASE_URL = 'postgresql+asyncpg://postgres:postgres@localhost:5432/test_db'
+from tests.settings import TestDBSettings
 
 
 @pytest.fixture(scope='session')
 async def engine():
     """Создаём движок и структуру таблиц один раз за все тесты."""
-    engine = create_async_engine(TEST_DATABASE_URL, poolclass=NullPool)
+    engine = create_db_engine(TestDBSettings(), use_null_pool=True)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield engine
@@ -22,7 +20,7 @@ async def engine():
 @pytest.fixture(scope='session')
 def session_maker(engine):
     """Создаём sessionmaker для тестов."""
-    return async_sessionmaker(engine, expire_on_commit=False)
+    return create_session_maker(engine)
 
 
 @pytest.fixture

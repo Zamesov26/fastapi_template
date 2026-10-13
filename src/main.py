@@ -3,9 +3,9 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from src.api.router import api_router
+from src.database.session import create_db_engine, create_session_maker
 from src.settings import Settings
 from src.web.middlewares.setup import add_middlewares
 
@@ -17,10 +17,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         """Управлять ресурсами при запуске и завершении приложения."""
-        app.state.engine = create_async_engine(current_settings.db.url)
-        app.state.session_maker = async_sessionmaker(
-            app.state.engine, expire_on_commit=False
-        )
+        app.state.engine = create_db_engine(current_settings.db)
+        app.state.session_maker = create_session_maker(app.state.engine)
         try:
             yield
         finally:

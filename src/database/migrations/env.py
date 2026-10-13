@@ -1,13 +1,9 @@
-import sys
+import asyncio
 from logging.config import fileConfig
-from os.path import abspath, dirname
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
-
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
-sys.path.insert(0, dirname(dirname(dirname((dirname(abspath(__file__)))))))
+from sqlalchemy import Connection, pool
+from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from src.database.base import Base
 from src.database.model_registry import register_models
@@ -17,7 +13,7 @@ register_models()
 settings = Settings()
 
 config = context.config
-config.set_main_option("sqlalchemy.url", f"{settings.db.url}?async_fallback=True")
+config.set_main_option('sqlalchemy.url', settings.db.url.replace('%', '%%'))
 
 
 # Interpret the config file for Python logging.
@@ -57,19 +53,31 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def run_migrations_online() -> None:
-    """Запустить миграции с подключением к базе данных."""
-    connectable = engine_from_config(
+def do_run_migrations(connection: Connection) -> None:
+    """Выполнить миграции через синхронный интерфейс соединения."""
+    context.configure(connection=connection, target_metadata=target_metadata)
+
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+async def run_async_migrations() -> None:
+    """Создать асинхронный engine и выполнить миграции."""
+    connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+        prefix='sqlalchemy.',
         poolclass=pool.NullPool,
     )
 
-    with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_run_migrations)
 
-        with context.begin_transaction():
-            context.run_migrations()
+    await connectable.dispose()
+
+
+def run_migrations_online() -> None:
+    """Запустить миграции с асинхронным подключением к базе данных."""
+    asyncio.run(run_async_migrations())
 
 
 if context.is_offline_mode():
