@@ -55,7 +55,8 @@ uvicorn src.main:create_app --factory --reload --host 0.0.0.0 --port 8000
 - API: `http://localhost:8000`;
 - Swagger UI: `http://localhost:8000/docs`;
 - ReDoc: `http://localhost:8000/redoc`;
-- проверка доступности: `GET /api/v1/health`.
+- liveness: `GET /api/v1/health/live`;
+- readiness с проверкой PostgreSQL: `GET /api/v1/health/ready`.
 
 ## Команды разработки
 
@@ -68,6 +69,36 @@ make typecheck     # Проверить типы с помощью mypy
 ```
 
 Дополнительные команды автоматического исправления доступны в `Makefile`.
+
+## Docker
+
+Docker Compose запускает только API и не создаёт PostgreSQL. Параметры внешней
+базы данных передаются контейнеру из корневого `.env`.
+
+Если PostgreSQL запущен на машине разработчика, укажите:
+
+```dotenv
+DB_HOST=host.docker.internal
+```
+
+Сборка и запуск API:
+
+```bash
+make docker-up
+```
+
+Применение миграций и просмотр логов:
+
+```bash
+make docker-migrate
+make docker-logs
+```
+
+Остановка контейнера:
+
+```bash
+make docker-down
+```
 
 ## Миграции
 
@@ -111,6 +142,9 @@ alembic current
 | `DB_NAME` | Имя базы данных | обязательный параметр |
 | `DB_DRIVER` | Драйвер SQLAlchemy | `asyncpg` |
 
+Для интеграционных тестов используются аналогичные переменные с префиксом
+`TEST_DB_`. По умолчанию тесты подключаются к базе `test_db` на `localhost`.
+
 Пример значений находится в `.example.env`. Файл `.env` исключён из Git.
 
 ## Структура проекта
@@ -126,6 +160,8 @@ fastapi_template/
 │   ├── main.py
 │   └── settings.py
 ├── tests/            # Тесты и фикстуры
+├── infra/            # Dockerfile и Docker Compose
+├── .github/workflows/ # CI-проверки
 ├── alembic.ini
 ├── dev_run.py
 ├── Makefile
@@ -150,3 +186,6 @@ middleware — в `src/web/middlewares/setup.py`.
 Имена индексов и ограничений формируются по общему naming convention из
 `src/database/base.py`, поэтому миграции Alembic получают стабильные имена
 объектов схемы.
+
+При push и pull request GitHub Actions запускает lint, проверку
+форматирования, typecheck и тесты.

@@ -1,4 +1,8 @@
-.PHONY: lint lint-preview lint-fix format format-check ruff-all typecheck test
+.PHONY: \
+	lint lint-preview lint-fix format format-check ruff-all typecheck test \
+	docker-build docker-up docker-down docker-logs docker-migrate
+
+COMPOSE = docker compose -f infra/docker-compose.yml
 
 # Показать все проблемы без изменения файлов.
 lint:
@@ -32,3 +36,23 @@ typecheck:
 # Запустить тесты.
 test:
 	pytest
+
+# Собрать образ приложения.
+docker-build:
+	$(COMPOSE) build api
+
+# Запустить приложение в Docker.
+docker-up:
+	$(COMPOSE) up --build -d api
+
+# Остановить Docker-контур.
+docker-down:
+	$(COMPOSE) down
+
+# Следить за логами приложения.
+docker-logs:
+	$(COMPOSE) logs -f api
+
+# Применить миграции к настроенной внешней базе данных.
+docker-migrate:
+	$(COMPOSE) run --rm api alembic upgrade head
