@@ -15,7 +15,7 @@ class TestLiveness:
 
     async def test_returns_alive_status(self, client):
         """Вернуть успешный статус работающего процесса."""
-        response = await client.get('/api/v1/health/live')
+        response = await client.get('/health/live')
 
         assert response.status_code == 200
         assert response.json() == {'status': 'alive'}
@@ -37,7 +37,7 @@ class TestReadiness:
 
         app.dependency_overrides[get_session] = override_get_session
 
-        response = await client.get('/api/v1/health/ready')
+        response = await client.get('/health/ready')
 
         assert response.status_code == 200
         assert response.json() == {'status': 'ready'}
@@ -57,7 +57,7 @@ class TestReadiness:
 
         app.dependency_overrides[get_session] = override_get_session
 
-        response = await client.get('/api/v1/health/ready')
+        response = await client.get('/health/ready')
 
         assert response.status_code == 503
         assert response.json() == {'detail': 'Database is unavailable'}

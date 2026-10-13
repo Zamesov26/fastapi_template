@@ -55,8 +55,8 @@ uvicorn src.main:create_app --factory --reload --host 0.0.0.0 --port 8000
 - API: `http://localhost:8000`;
 - Swagger UI: `http://localhost:8000/docs`;
 - ReDoc: `http://localhost:8000/redoc`;
-- liveness: `GET /api/v1/health/live`;
-- readiness с проверкой PostgreSQL: `GET /api/v1/health/ready`.
+- liveness: `GET /health/live`;
+- readiness с проверкой PostgreSQL: `GET /health/ready`.
 
 ## Команды разработки
 

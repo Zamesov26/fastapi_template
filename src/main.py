@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from src.api.router import api_router
 from src.database.session import create_db_engine, create_session_maker
+from src.domains.health.router import router as health_router
 from src.settings import Settings
 from src.web.middlewares.setup import add_middlewares
 
@@ -32,5 +33,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
 
     add_middlewares(app)
+    app.include_router(health_router)
     app.include_router(api_router, prefix='/api/v1')
     return app
