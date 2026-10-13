@@ -10,9 +10,10 @@ from sqlalchemy import engine_from_config, pool
 sys.path.insert(0, dirname(dirname(dirname((dirname(abspath(__file__)))))))
 
 from src.database.base import Base
-from src.models import *
+from src.database.model_registry import register_models
 from src.settings import Settings
 
+register_models()
 settings = Settings()
 
 config = context.config

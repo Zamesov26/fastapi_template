@@ -5,9 +5,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from src.api.handlers.routers_v1 import api_router as v1_routers
-from src.middlewares.setup import add_middlewares
+from src.api.router import api_router
 from src.settings import Settings
+from src.web.middlewares.setup import add_middlewares
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -34,5 +34,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
 
     add_middlewares(app)
-    app.include_router(v1_routers, prefix='/api/v1')
+    app.include_router(api_router, prefix='/api/v1')
     return app

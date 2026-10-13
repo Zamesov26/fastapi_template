@@ -25,9 +25,9 @@ def session_maker(engine):
     return async_sessionmaker(engine, expire_on_commit=False)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 async def clear_db(session_maker):
-    """Очищать данные во всех таблицах после каждого теста."""
+    """Очистить данные во всех таблицах перед тестом."""
     async with session_maker() as session:
         for table in reversed(Base.metadata.sorted_tables):
             await session.execute(table.delete())

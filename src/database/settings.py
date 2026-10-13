@@ -2,6 +2,7 @@
 
 from pydantic import Field
 from pydantic_settings import SettingsConfigDict
+from sqlalchemy import URL
 
 from src.config import AppBaseSettings
 
@@ -21,4 +22,11 @@ class DBSettings(AppBaseSettings):
     @property
     def url(self) -> str:
         """Формирует строку подключения к PostgreSQL."""
-        return f'postgresql+{self.driver}://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}'
+        return URL.create(
+            drivername=f'postgresql+{self.driver}',
+            username=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+            database=self.name,
+        ).render_as_string(hide_password=False)

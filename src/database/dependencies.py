@@ -1,4 +1,4 @@
-"""Зависимости FastAPI."""
+"""Зависимости FastAPI для работы с базой данных."""
 
 from collections.abc import AsyncGenerator
 

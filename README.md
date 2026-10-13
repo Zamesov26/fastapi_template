@@ -118,13 +118,11 @@ alembic current
 ```text
 fastapi_template/
 ├── src/
-│   ├── api/          # HTTP API и маршруты
+│   ├── api/          # Сборка маршрутов HTTP API
 │   ├── database/     # Настройки БД и миграции
-│   ├── middlewares/  # Middleware приложения
-│   ├── models/       # Модели SQLAlchemy
-│   ├── schemas/      # Схемы Pydantic
+│   ├── domains/      # Домены, модели, схемы и бизнес-логика
+│   ├── web/          # Общая веб-инфраструктура и middleware
 │   ├── config.py     # Общие правила загрузки окружения
-│   ├── dependencies.py
 │   ├── main.py
 │   └── settings.py
 ├── tests/            # Тесты и фикстуры
@@ -134,4 +132,21 @@ fastapi_template/
 └── pyproject.toml
 ```
 
-Новые маршруты подключаются в `src/api/handlers/routers_v1.py`, модели — в `src/models/__init__.py`, а middleware регистрируются в `src/middlewares/setup.py`.
+Каждый домен размещается в `src/domains/` и содержит собственные модели, схемы,
+сервисы и HTTP router. Доменные routers подключаются в `src/api/router.py`,
+модели регистрируются в `src/database/model_registry.py`, а глобальные
+middleware — в `src/web/middlewares/setup.py`.
+
+Код разделяется по ответственности:
+
+- `domains` хранит предметную логику, модели, схемы и доменные routers;
+- `database` хранит общие компоненты SQLAlchemy, миграции и зависимость сессии;
+- `api` собирает routers доменов в общий API;
+- `web` хранит middleware и другую общую HTTP-инфраструктуру.
+
+При добавлении домена с SQLAlchemy-моделями путь к его модулю нужно
+добавить в `MODEL_MODULES` в `src/database/model_registry.py`.
+
+Имена индексов и ограничений формируются по общему naming convention из
+`src/database/base.py`, поэтому миграции Alembic получают стабильные имена
+объектов схемы.
